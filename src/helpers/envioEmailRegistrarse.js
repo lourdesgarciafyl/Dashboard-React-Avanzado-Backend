@@ -1,12 +1,12 @@
 import emailjs from '@emailjs/nodejs';
-const envioEmail = (nombreUsuario, emailDestinatario) => {
+const envioEmail = (nombre, emailDestinatario) => {
     emailjs.init({
         publicKey: process.env.YOUR_PUBLIC_KEY,
         privateKey: process.env.YOUR_PRIVATE_KEY,
       });
     let templateParams = {
         from_name: 'Yumyum',
-        user_name: `${nombreUsuario}`,
+        user_name: `${nombre}`,
         destinatario: `${emailDestinatario}`,
         message: 'Gracias por usar nuestros servicios. Deseamos que tengas una buena experiencia con nosotros.'
     };

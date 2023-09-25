@@ -1,13 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 
 const usuarioSchema = new Schema({
-  nombreUsuario: {
+  nombre: {
     type: String,
     required: true,
     minLength: 3,
     maxLength: 30,
   },
-  apellidoUsuario: {
+  apellido: {
     type: String,
     required: true,
     minLength: 3,
@@ -29,7 +29,7 @@ const usuarioSchema = new Schema({
     type: String,
     required: true,
   },
-  perfil: {
+  rol: {
     type: String,
     required: true,
   },
