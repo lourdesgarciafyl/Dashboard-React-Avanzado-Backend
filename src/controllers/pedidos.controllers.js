@@ -8,7 +8,6 @@ export const crearPedido = async (req, res) => {
       mensaje: "El pedido fue creado correctamente.",
     });
   } catch (error) {
-    console.log(error);
     res.status(400).json({
       mensaje: "Error no se pudo crear un pedido",
     });
@@ -17,19 +16,17 @@ export const crearPedido = async (req, res) => {
 
 export const obtenerListaPedidos = async (req, res) => {
   try {
-    //buscar en la BD la collection de pedidos
     const pedidos = await Pedido.find()
       .populate({
         path: "productos.producto",
-        select: "-_id -__v", // Opcional: selecciona los campos que deseas excluir, como _id y __v
+        select: "-_id -__v", 
       })
       .populate({
         path: "usuario",
-        select: "-_id -password -estado -perfil -__v", //  Opcional: selecciona los campos que deseas excluir, como _id y __v -password -estado -perfil
+        select: "-_id -password -estado -rol -__v", 
       });
     res.status(200).json(pedidos);
   } catch (error) {
-    console.log(error);
     res.status(404).json({
       mensaje: "Error al intentar listar los pedidos",
     });
@@ -45,11 +42,10 @@ export const obtenerPedido = async (req, res) => {
       })
       .populate({
         path: "usuario",
-        select: "-_id -password -estado -perfil -__v",
+        select: "-_id -password -estado -rol -__v",
       });
     res.status(200).json(pedido);
   } catch (error) {
-    console.log(error);
     res.status(404).json({
       mensaje: "Error, no se pudo obtener el pedido.",
     });
@@ -76,7 +72,6 @@ export const entregarPedido = async (req, res) => {
       mensaje: "Se entregó el pedido correctamente.",
     });
   } catch (error) {
-    console.log(error);
     res.status(404).json({
       mensaje: "Error, no se pudo pasar a entregado el pedido.",
     });
@@ -84,27 +79,23 @@ export const entregarPedido = async (req, res) => {
 };
 
 export const pedidoEnProceso = async (req, res) => {
-  // En proceso
   const idPedido = req.params.id;
   try {
     const pedido = await Pedido.findById(idPedido);
     if (!pedido) {
       return res.status(404).json({ error: "Pedido no encontrado" });
     }
-
     if (pedido.estado === "En proceso") {
       return res
         .status(404)
         .json({ error: "El pedido ya se encuentra en proceso" });
     }
-
     pedido.estado = "En proceso";
     await pedido.save();
     res.status(200).json({
       mensaje: "El pedido esta en proceso.",
     });
   } catch (error) {
-    console.log(error);
     res.status(404).json({
       mensaje: 'Error, no se pudo pasar a "en proceso" el pedido.',
      }); 
@@ -124,7 +115,6 @@ export const borrarPedido = async (req, res) => {
       mensaje: "Pedido eliminado exitosamente.",
     });
   } catch (error) {
-    console.log(error);
     res.status(400).json({
       mensaje: "No se pudo eliminar el pedido.",
     });

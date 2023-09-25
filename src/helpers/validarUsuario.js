@@ -2,14 +2,14 @@ import resultadoValidacion from "./resultadoValidacion";
 import { check } from "express-validator";
 
 export const validarUsuario = [
-  check(`nombreUsuario`)
+  check(`nombre`)
     .notEmpty()
     .withMessage("El nombre del usuario es obligatorio")
     .isString()
     .isLength({ min: 3, max: 30 })
     .withMessage("El nombre del usuario debe contener entre 3 y 30 caracteres"),
 
-  check(`apellidoUsuario`)
+  check(`apellido`)
     .notEmpty()
     .withMessage("El Apellido  del usuario es obligatorio")
     .isString()
@@ -43,9 +43,9 @@ export const validarUsuario = [
     .isIn(["Activo", "Inactivo"])
     .withMessage("Debe elegir una opción válida"),
 
-  check(`perfil`)
+  check(`rol`)
     .notEmpty()
-    .withMessage("El perfil del usuario es un dato obligatorio")
+    .withMessage("El rol del usuario es un dato obligatorio")
     .isIn(["Administrador", "Cliente"])
     .withMessage("Debe elegir una opción válida"),
 
@@ -69,14 +69,14 @@ export const validarLogin = [
 ]
 
 export const validarRegistro = [
-  check(`nombreUsuario`)
+  check(`nombre`)
   .notEmpty()
   .withMessage("El nombre del usuario es obligatorio")
   .isString()
   .isLength({ min: 3, max: 30 })
   .withMessage("El nombre del usuario debe contener entre 3 y 30 caracteres"),
 
-check(`apellidoUsuario`)
+check(`apellido`)
   .notEmpty()
   .withMessage("El Apellido  del usuario es obligatorio")
   .isString()
