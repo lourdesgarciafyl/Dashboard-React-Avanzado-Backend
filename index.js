@@ -7,7 +7,7 @@ import "./src/database/dbConnection"
 import productsRouter from "./src/routes/products.routes"
 import categoriasRouter from "./src/routes/categorias.routes"
 import usuariosRouter from "./src/routes/usuarios.routes"
-import pedidosRouter from "./src/routes/pedidos.routes"
+import salesRouter from "./src/routes/sales.routes"
 
 dotenv.config();
 const app = express();
@@ -26,4 +26,4 @@ app.use(express.static(path.join(__dirname, `/public`)))
 app.use(`/api/products`, productsRouter)
 app.use(`/api/categorias`, categoriasRouter)
 app.use(`/api/auth`, usuariosRouter)
-app.use(`/api/pedidos`, pedidosRouter)
+app.use(`/api/sales`, salesRouter)
