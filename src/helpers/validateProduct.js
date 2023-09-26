@@ -1,48 +1,48 @@
-import resultadoValidacion from "./resultadoValidacion";
+import validationResults from "./validationResults";
 import { check } from "express-validator";
 
-const validarProducto = [
-    check(`nombreProducto`)
+const validateProduct = [
+    check(`productName`)
     .notEmpty()
     .withMessage("El nombre del producto es obligatorio")
     .isString()
     .isLength({min: 3, max:50})
     .withMessage("El nombre del producto debe contener entre 3 y 50 caracteres"),
-    check(`precio`)
+    check(`price`)
     .notEmpty()
     .withMessage("El preico del producto es obligatorio")
     .isNumeric()
     .withMessage("Debe ingresar un valor numerico")
     .custom((value) =>{
-        if(value >= 100 && value <= 10000){
+        if(value >= 0 && value <= 100000){
             return true;
         }else{
-            throw new Error("El precio debe entre $100 y $10000")
+            throw new Error("El precio debe entre $0 y $100000")
         }
     }),
-    check(`imagen`)
+    check(`image`)
     .notEmpty()
     .withMessage("La imagen es un dato obligatorio")
     .matches(/^(http(s?):)([/|.|\w|\s|-])*\.(?:png|jpe?g|gif|svg)$/)
     .withMessage("Debe ingresar un link terminado en jpg, jpeg, gif o png"),
-    check(`detalle`)
+    check(`detail`)
     .notEmpty()
     .withMessage("El detalle del producto es obligatorio")
     .isString()
     .isLength({min: 5, max:500})
     .withMessage("El detalle del producto debe contener entre 5 y 500 caracteres"),
-    check(`estado`)
+    check(`status`)
     .notEmpty()
     .withMessage("El estado es un dato obligatorio")
     .isIn(["Activo","Inactivo"])
     .withMessage("Debe elegir una opción válida"),
-    check(`categoria`)
+    check(`category`)
     .notEmpty()
     .withMessage("La categoría es un dato obligatorio")
-    .isIn(["Hamburguesa","Pizza", "Veggie", "Bebida", "Promociones", "Otro"])
+    .isIn(["Remera", "Buzo", "Campera", "Shorts", "Zapatillas", "Jogging", "Tops", "Otro"])
     .withMessage("Debe elegir una opción válida"),
 
-    (req, res, next) => {resultadoValidacion(req, res, next)}
+    (req, res, next) => {validationResults(req, res, next)}
 ]
 
-export default validarProducto;
+export default validateProduct;

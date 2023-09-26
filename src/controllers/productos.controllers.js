@@ -1,10 +1,10 @@
 import { json } from "express";
-import Producto from "../models/producto";
+import Product from "../models/product";
 
-export const crearProducto = async (req, res) => {
+export const createProduct = async (req, res) => {
     try{
-        const productoNuevo = new Producto(req.body);
-        await productoNuevo.save();
+        const newProduct = new Product(req.body);
+        await newProduct.save();
         res.status(201).json({
             mensaje: "El producto fue creado correctamente"
         })
@@ -15,10 +15,10 @@ export const crearProducto = async (req, res) => {
     }
 }
 
-export const obtenerListaProductos = async (req, res) =>{
+export const getListProducts = async (req, res) =>{
     try{
-        const productos = await Producto.find();
-        res.status(200).json(productos);
+        const products = await Product.find();
+        res.status(200).json(products);
     } catch(error){
         res.status(404).json({
             mensaje: "Error. No se pudo obtener la lista de productos"
@@ -26,9 +26,9 @@ export const obtenerListaProductos = async (req, res) =>{
     }
 }
 
-export const editarProducto = async (req, res) => {
+export const editProduct = async (req, res) => {
   try {
-    await Producto.findByIdAndUpdate(req.params.id, req.body);
+    await Product.findByIdAndUpdate(req.params.id, req.body);
     res.status(200).json({
       mensaje: 'El producto fue editado correctamente.',
     });
@@ -44,10 +44,10 @@ export const editarProducto = async (req, res) => {
   }
 };
 
-export const obtenerProducto = async (req, res) =>{
+export const getProduct = async (req, res) =>{
   try{
-     const producto = await Producto.findById(req.params.id);
-     res.status(200).json(producto);
+     const product = await Product.findById(req.params.id);
+     res.status(200).json(product);
   }catch(error){
       res.status(404).json({
           mensaje: "Error, no se pudo obtener el producto."
@@ -55,9 +55,9 @@ export const obtenerProducto = async (req, res) =>{
   }
 }
 
-export const borrarProducto = async (req, res) =>{
+export const deleteProduct = async (req, res) =>{
   try{
-     await Producto.findByIdAndDelete(req.params.id);
+     await Product.findByIdAndDelete(req.params.id);
      res.status(200).json({
       mensaje: "El producto fue eliminado correctamente"
      })
@@ -68,10 +68,10 @@ export const borrarProducto = async (req, res) =>{
   }
 };
 
-export const consultaProductosPorCategoria = async (req, res) => {
+export const getProductsByCategory = async (req, res) => {
   try {
-    const producto = await Producto.find({categoria: req.params.categoria, estado: "Activo"});
-    res.status(200).json(producto);
+    const product = await Product.find({category: req.params.category, status: "Activo"});
+    res.status(200).json(product);
   } catch (error) {
     res.status(404).json({
       mensaje: 'Error al intentar obtener el/los producto/s por categoría y en estado activos',
@@ -79,20 +79,20 @@ export const consultaProductosPorCategoria = async (req, res) => {
   }
 };
 
-export const activarProducto = async (req, res) => {
-  const idProducto = req.params.id;
+export const activateProduct = async (req, res) => {
+  const idProduct = req.params.id;
   try {
-    const producto = await Producto.findById(idProducto);
-    if (!producto) {
+    const product = await Product.findById(idProduct);
+    if (!product) {
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
-    if (producto.estado === 'Activo') {
+    if (product.status === 'Activo') {
       return res
         .status(404)
         .json({ error: 'El producto ya se encuentra activo' });
     }
-    producto.estado = 'Activo';
-    await producto.save();
+    product.status = 'Activo';
+    await product.save();
     res.status(200).json({
       mensaje: 'Se activó el producto correctamente.',
     });
@@ -103,20 +103,20 @@ export const activarProducto = async (req, res) => {
   }
 };
 
-export const desactivarProducto = async (req, res) => {
-  const idProducto = req.params.id;
+export const desactivateProduct = async (req, res) => {
+  const idProduct = req.params.id;
   try {
-    const producto = await Producto.findById(idProducto);
-    if (!producto) {
+    const product = await Product.findById(idProduct);
+    if (!product) {
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
-    if (producto.estado === 'Inactivo') {
+    if (product.status === 'Inactivo') {
       return res
         .status(404)
         .json({ error: 'El producto ya se encuentra inactivo.' });
     }
-    producto.estado = 'Inactivo';
-    await producto.save();
+    product.status = 'Inactivo';
+    await product.save();
     res.status(200).json({
       mensaje: 'Se desactivó el producto correctamente.',
     });
@@ -127,10 +127,10 @@ export const desactivarProducto = async (req, res) => {
   }
 };
 
-export const obtenerProductosActivos = async (req, res) => {
+export const getActiveProducts = async (req, res) => {
   try {
-    const productosActivos = await Producto.find({ estado: 'Activo' });
-    res.status(200).json(productosActivos);
+    const activeProducts = await Product.find({ status: 'Activo' });
+    res.status(200).json(activeProducts);
   } catch (error) {
     res.status(404).json({
       mensaje:
