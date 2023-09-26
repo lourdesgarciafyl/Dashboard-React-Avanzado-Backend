@@ -1,4 +1,4 @@
-import resultadoValidacion from "./resultadoValidacion";
+import resultadoValidacion from "./validationResults";
 import { check } from "express-validator";
 
 const validarPedido = [
@@ -22,10 +22,10 @@ const validarPedido = [
     .withMessage("El precio total es un dato obligatorio")
     .isNumeric()
     .custom((value) => {
-        if(value >= 100 && value <= 500000){
+        if(value >= 0 && value <= 500000){
             return true;
         } else {
-            throw new Error("El precio debe entre $100 y $500000")
+            throw new Error("El precio debe entre $0 y $500000")
         }
     }),
    

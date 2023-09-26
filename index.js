@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 import morgan from "morgan";
 import path from "path";
 import "./src/database/dbConnection"
-import productosRouter from "./src/routes/productos.routes"
+import productsRouter from "./src/routes/products.routes"
 import categoriasRouter from "./src/routes/categorias.routes"
 import usuariosRouter from "./src/routes/usuarios.routes"
 import pedidosRouter from "./src/routes/pedidos.routes"
@@ -23,7 +23,7 @@ app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, `/public`)))
 
 
-app.use(`/api/productos`, productosRouter)
+app.use(`/api/products`, productsRouter)
 app.use(`/api/categorias`, categoriasRouter)
 app.use(`/api/auth`, usuariosRouter)
 app.use(`/api/pedidos`, pedidosRouter)

@@ -1,4 +1,4 @@
-import resultadoValidacion from "./resultadoValidacion";
+import resultadoValidacion from "./validationResults";
 import { check } from "express-validator";
 
 export const validarUsuario = [

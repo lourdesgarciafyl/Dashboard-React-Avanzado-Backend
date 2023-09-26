@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const validarJWT = (req, res, next) => {
+const validateJWT = (req, res, next) => {
   const token = req.header("x-token");
   if (!token) {
     return res.status(401).json({
@@ -19,4 +19,4 @@ const validarJWT = (req, res, next) => {
   next();
 };
 
-export default validarJWT;
+export default validateJWT;
