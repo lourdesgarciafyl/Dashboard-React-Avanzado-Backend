@@ -32,6 +32,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  avatar: {
+    public_id: String,
+    secure_url: String
+  }
 });
 
 const User = mongoose.model(`user`, userSchema);

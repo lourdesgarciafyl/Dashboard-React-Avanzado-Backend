@@ -1,4 +1,6 @@
 //import envioEmail from '../helpers/envioEmailRegistrarse';
+import { deleteImage, uploadImage } from '../helpers/cloudinary';
+import fs from 'fs-extra';
 import generarJWT from '../helpers/tokenLogin';
 import User from '../models/user';
 import bcrypt from 'bcrypt';
@@ -6,6 +8,9 @@ import bcrypt from 'bcrypt';
 export const createUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    
+
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
@@ -13,6 +18,16 @@ export const createUser = async (req, res) => {
       });
     }
     user = new User(req.body);
+
+    if(req.files !== null && req.files !==undefined){
+      const result = await uploadImage(req.files.image.tempFilePath);
+      user.avatar = {
+        public_id: result.public_id,
+        secure_url: result.secure_url
+      }
+
+     await fs.unlink(req.files.image.tempFilePath)
+     }
     const salt = bcrypt.genSaltSync(10);
     user.password = bcrypt.hashSync(password, salt);
 
@@ -77,6 +92,7 @@ export const deleteUser = async (req, res) => {
       });
     }
     await User.findByIdAndDelete(req.params.id);
+    await deleteImage(user.avatar.public_id)
     res.status(200).json({
       mensaje: 'Usuario eliminado exitosamente.',
     });
@@ -150,6 +166,8 @@ export const registerClient = async (req, res) => {
     user.lastname = lastname;
     user.role = 'Cliente';
     user.status = 'Activo';
+    user.avatar.public_id = null;
+    user.avatar.secure_url = null;
     await user.save();
     res.status(201).json({
       mensaje: 'Usuario registrado',
