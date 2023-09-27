@@ -166,6 +166,8 @@ export const registerClient = async (req, res) => {
     user.lastname = lastname;
     user.role = 'Cliente';
     user.status = 'Activo';
+    user.avatar.public_id = null;
+    user.avatar.secure_url = null;
     await user.save();
     res.status(201).json({
       mensaje: 'Usuario registrado',
