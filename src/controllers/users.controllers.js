@@ -6,6 +6,8 @@ import bcrypt from 'bcrypt';
 export const createUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    console.log(req.files);
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({

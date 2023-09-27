@@ -3,6 +3,8 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import morgan from 'morgan';
 import path from 'path';
+import fileUpload from 'express-fileupload';
+
 import './src/database/dbConnection';
 import productsRouter from './src/routes/products.routes';
 import categoriasRouter from './src/routes/categorias.routes';
@@ -21,6 +23,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, `/public`)));
+// Note that this option available for versions 1.0.0 and newer.
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/upload',
+  })
+);
 
 app.use(`/api/products`, productsRouter);
 app.use(`/api/categorias`, categoriasRouter);
