@@ -8,13 +8,10 @@ import bcrypt from 'bcrypt';
 export const createUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    
-
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
-        mensaje: 'ya existe un usuario con el correo enviado',
+        msg: 'ya existe un usuario con el correo enviado',
       });
     }
     user = new User(req.body);
@@ -33,13 +30,15 @@ export const createUser = async (req, res) => {
 
     await user.save();
     res.status(201).json({
-      mensaje: 'usuario creado',
+      msg: 'usuario creado',
       firstname: user.firstname,
       uid: user._id,
     });
   } catch (error) {
     res.status(400).json({
-      mensaje: 'El usuario no se creó',
+      errores: [{
+        msg: 'El usuario no se creó'
+      }]
     });
   }
 };
@@ -51,25 +50,31 @@ export const loginUser = async (req, res) => {
     const { firstname, role } = user;
     if (!user) {
       return res.status(400).json({
-        mensaje: 'Email o password no válido - email',
+        errores: [{
+          msg: 'Email o password no válido - email'
+        }]
       });
     }
     if (user.status !== 'Activo') {
       return res.status(400).json({
-        mensaje: 'El usuario no se encuentra activo - estado',
+        errores: [{
+          msg: 'El usuario no se encuentra activo - estado'
+        }]
       });
     }
 
     const passwordValid = bcrypt.compareSync(password, user.password);
     if (!passwordValid) {
       return res.status(400).json({
-        mensaje: 'Email o password no válido - password',
+        errores: [{
+          msg: 'Email o password no válido - password'
+        }]
       });
     }
     const token = await generarJWT({ firstname, role });
 
     res.status(200).json({
-      mensaje: 'El usuario es correcto',
+      msg: 'El usuario es correcto',
       firstname: user.firstname,
       _id: user._id,
       email: user.email,
@@ -77,8 +82,10 @@ export const loginUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(404).json({
-      mensaje: 'Usuario o Password incorrecto',
+    res.status(400).json({
+      errores: [{
+        msg: 'Usuario o Password incorrecto'
+      }]
     });
   }
 };
@@ -87,18 +94,22 @@ export const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({
-        mensaje: 'El usuario no fue encontrado.',
-      });
+      return res.status(400).json({
+        errores: [{
+          msg: 'El usuario no fue encontrado.'
+        }]
+      });   
     }
     await User.findByIdAndDelete(req.params.id);
     await deleteImage(user.avatar.public_id)
     res.status(200).json({
-      mensaje: 'Usuario eliminado exitosamente.',
+      msg: 'Usuario eliminado exitosamente.',
     });
   } catch (error) {
     res.status(400).json({
-      mensaje: 'No se pudo eliminar el usuario.',
+      errores: [{
+        msg: 'No se pudo eliminar el usuario.'
+      }]
     });
   }
 };
@@ -108,9 +119,11 @@ export const editUser = async (req, res) => {
     const { email, firstname, lastname, status, role } = req.body;
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({
-        mensaje: 'El usuario no fue encontrado.',
-      });
+      return res.status(400).json({
+        errores: [{
+          msg: 'El usuario no fue encontrado.'
+        }]
+      });  
     }
     user.email = email;
     user.firstname = firstname;
@@ -119,11 +132,13 @@ export const editUser = async (req, res) => {
     user.role = role;
     await user.save();
     res.status(200).json({
-      mensaje: 'Usuario actualizado exitosamente.',
+      msg: 'Usuario actualizado exitosamente.',
     });
   } catch (error) {
     res.status(400).json({
-      mensaje: 'No se pudo actualizar el usuario correctamente.',
+      errores: [{
+        msg: 'No se pudo actualizar el usuario correctamente.'
+      }]
     });
   }
 };
@@ -133,8 +148,10 @@ export const getListUsers = async (req, res) => {
     const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
-    res.status(404).json({
-      mensaje: 'Error. No se pudo obtener la lista de usuarios',
+    res.status(400).json({
+      errores: [{
+        msg: 'Error. No se pudo obtener la lista de usuarios'
+      }]
     });
   }
 };
@@ -144,8 +161,10 @@ export const getUser = async (req, res) => {
     const user = await User.findById(req.params.id);
     res.status(200).json(user);
   } catch (error) {
-    res.status(404).json({
-      mensaje: 'Error. No se pudo obtener el usuario',
+    res.status(400).json({
+      errores: [{
+        msg: 'Error. No se pudo obtener el usuario'
+      }]
     });
   }
 };
@@ -156,7 +175,9 @@ export const registerClient = async (req, res) => {
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
-        mensaje: 'El email ya se encuentra registrado.',
+        errores: [{
+          msg: 'El email ya se encuentra registrado.'
+        }]
       });
     }
     user = new User(req.body);
@@ -170,7 +191,7 @@ export const registerClient = async (req, res) => {
     user.avatar.secure_url = null;
     await user.save();
     res.status(201).json({
-      mensaje: 'Usuario registrado',
+      msg: 'Usuario registrado',
       firstname,
       role: user.role,
       uid: user._id,
@@ -178,7 +199,9 @@ export const registerClient = async (req, res) => {
     // envioEmail(usuario.nombreUsuario, usuario.email);
   } catch (error) {
     res.status(400).json({
-      mensaje: 'El usuario no pudo ser registrado.',
+      errores: [{
+        msg: 'El usuario no pudo ser registrado'
+      }]
     });
   }
 };
@@ -197,11 +220,13 @@ export const changePassword = async (req, res) => {
     }
     await user.save();
     res.status(200).json({
-      mensaje: 'La contraseña se cambió correctamente.',
+      msg: 'La contraseña se cambió correctamente.',
     });
   } catch (error) {
     res.status(400).json({
-      mensaje: 'La contraseña no se pudo cambiar.',
+      errores: [{
+        msg: 'La contraseña no se pudo cambiar.'
+      }]
     });
   }
 };
