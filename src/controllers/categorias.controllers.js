@@ -1,9 +1,9 @@
-import Categoria from '../models/categoria';
+import Category from '../models/category';
 
-export const crearCategoria = async (req, res) => {
+export const createCategory = async (req, res) => {
   try {
-    const categoriaNueva = new Categoria(req.body);
-    await categoriaNueva.save();
+    const newCategory = new Category(req.body);
+    await newCategory.save();
     res.status(201).json({
       mensaje: 'La categoria fue creada correctamente',
     });
@@ -14,10 +14,10 @@ export const crearCategoria = async (req, res) => {
   }
 };
 
-export const obtenerListaCategorias = async (req, res) => {
+export const getListCategories = async (req, res) => {
   try {
-    const categorias = await Categoria.find();
-    res.status(200).json(categorias);
+    const categories = await Category.find();
+    res.status(200).json(categories);
   } catch (error) {
     res.status(404).json({
       mensaje: 'Error. No se pudo obtener la lista de categorias',
@@ -25,10 +25,10 @@ export const obtenerListaCategorias = async (req, res) => {
   }
 };
 
-export const obtenerListaCategoriasActivas = async (req, res) => {
+export const getListActiveCategories = async (req, res) => {
   try {
-    const categoriasActivas = await Categoria.find({ estado: 'Activo' });
-    res.status(200).json(categoriasActivas);
+    const activeCategories = await Category.find({ status: 'Activo' });
+    res.status(200).json(activeCategories);
   } catch (error) {
     res.status(404).json({
       mensaje:

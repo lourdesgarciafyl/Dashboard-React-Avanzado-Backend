@@ -7,7 +7,7 @@ import fileUpload from 'express-fileupload';
 
 import './src/database/dbConnection';
 import productsRouter from './src/routes/products.routes';
-import categoriasRouter from './src/routes/categorias.routes';
+import categoriesRouter from './src/routes/categories.routes';
 import usersRouter from './src/routes/users.routes';
 import salesRouter from './src/routes/sales.routes';
 
@@ -32,6 +32,6 @@ app.use(
 );
 
 app.use(`/api/products`, productsRouter);
-app.use(`/api/categorias`, categoriasRouter);
+app.use(`/api/categories`, categoriesRouter);
 app.use(`/api/auth`, usersRouter);
 app.use(`/api/sales`, salesRouter);
