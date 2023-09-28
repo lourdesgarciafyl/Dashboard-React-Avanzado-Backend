@@ -16,15 +16,15 @@ export const createSale = async (req, res) => {
       });
     }
 
-    if (userSearched.cart.length === 0) {
-      return res.status(400).json({
-        errores: [
-          {
-            msg: 'No hay productos en el carrito.',
-          },
-        ],
-      });
-    }
+    // if (userSearched.cart.length === 0) {
+    //   return res.status(400).json({
+    //     errores: [
+    //       {
+    //         msg: 'No hay productos en el carrito.',
+    //       },
+    //     ],
+    //   });
+    // }
 
     //Verificar el stock de cada producto y realizar la venta.
     const promisesStock = products.map(async (item) => {
@@ -45,8 +45,8 @@ export const createSale = async (req, res) => {
     if (productsAddStock) {
       const newSale = new Sale(req.body);
       await newSale.save();
-      //userSearched.cart = [];
-      //await userSearched.save();
+      userSearched.cart = [];
+      await userSearched.save();
       res.status(201).json({
         msg: 'La venta fue creada correctamente.',
       });
@@ -120,11 +120,29 @@ export const cancelSale = async (req, res) => {
       return res.status(404).json({ error: 'La venta ya se canceló.' });
     }
 
-    sale.status = 'Cancelada';
-    await sale.save();
-    res.status(200).json({
-      msg: 'La venta se canceló.',
+    //Verificar el stock de cada producto y realizar la venta.
+    const promisesStock = sale.products.map(async (item) => {
+      const { _id, quantity } = item;
+
+      //Realizar una consulta para obtener el stock actual del producto.
+      const product = await Product.findById(_id);
+
+      //Calcula el nuevo Stock después de la venta
+      const nuevoStock = product.stock + quantity;
+      product.stock = nuevoStock;
+      //Se guarda el producto con el stock actualizado
+      await product.save();
     });
+
+    const productsAddStock = Promise.all(promisesStock);
+    //Espera que todas las promesas se resuelvan y envía la respuesta
+    if (productsAddStock) {
+      sale.status = 'Cancelada';
+      await sale.save();
+      res.status(200).json({
+        msg: 'La venta se canceló.',
+      });
+    }
   } catch (error) {
     res.status(400).json({
       errores: [
