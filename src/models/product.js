@@ -24,6 +24,12 @@ const productSchema = new Schema({
         minLength: 5,
         maxLength: 500        
     },
+    stock: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0,
+      },
     status:{
         type: String,
         required: true
