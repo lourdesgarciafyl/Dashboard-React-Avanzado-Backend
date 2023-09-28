@@ -8,20 +8,20 @@ const saleSchema = new Schema({
     default: Date.now(),
   },
   products: [
-    {
-      product: { type: mongoose.Schema.Types.ObjectId, ref: 'product' },
-      quantity: {
-        type: Number,
-        required: true,
-        min: 1
-      },
-      subtotal: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 1000000,
-      },
-    },
+    // {
+    //   product: { type: mongoose.Schema.Types.ObjectId, ref: 'product' },
+    //   quantity: {
+    //     type: Number,
+    //     required: true,
+    //     min: 0
+    //   },
+    //   subtotal: {
+    //     type: Number,
+    //     required: true,
+    //     min: 0,
+    //     max: 1000000,
+    //   },
+    // },
   ],
   status: {
     type: String,
