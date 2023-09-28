@@ -5,11 +5,13 @@ export const createCategory = async (req, res) => {
     const newCategory = new Category(req.body);
     await newCategory.save();
     res.status(201).json({
-      mensaje: 'La categoria fue creada correctamente',
+      msg: 'La categoria fue creada correctamente',
     });
   } catch (error) {
     res.status(404).json({
-      mensaje: 'Error. No se pudo crear la categoria',
+      errores: [{
+        msg: 'Error. No se pudo crear la categoria'
+      }]
     });
   }
 };
@@ -20,7 +22,9 @@ export const getListCategories = async (req, res) => {
     res.status(200).json(categories);
   } catch (error) {
     res.status(404).json({
-      mensaje: 'Error. No se pudo obtener la lista de categorias',
+      errores: [{
+        msg: 'Error. No se pudo obtener la lista de categorias'
+      }]
     });
   }
 };
@@ -31,8 +35,9 @@ export const getListActiveCategories = async (req, res) => {
     res.status(200).json(activeCategories);
   } catch (error) {
     res.status(404).json({
-      mensaje:
-        'Error. No se pudo obtener la lista de categorias en estado Activo.',
+      errores: [{
+        msg: 'Error. No se pudo obtener la lista de categorias en estado Activo.'
+      }]
     });
   }
 };

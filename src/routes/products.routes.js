@@ -1,6 +1,6 @@
 import { Router } from "express";
 import validateProduct from "../helpers/validateProduct";
-import {activarProducto, consultaProductosPorCategoria, crearProducto, desactivarProducto, editarProducto, obtenerListaProductos, obtenerProducto, borrarProducto, obtenerProductosActivos, createProduct, getListProducts, getActiveProducts, getProduct, deleteProduct, editProduct, consultProductsByCategory, getProductsByCategory, activateProduct, desactivateProduct } from "../controllers/productos.controllers";
+import {createProduct, getListProducts, getActiveProducts, getProduct, deleteProduct, editProduct, getProductsByCategory, activateProduct, desactivateProduct } from "../controllers/products.controllers";
 import validateJWT from "../helpers/validateToken";
 
 

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createCategory, getListActiveCategories, getListCategories, obtenerListaCategorias, obtenerListaCategoriasActivas } from '../controllers/categorias.controllers';
+import { createCategory, getListActiveCategories, getListCategories } from '../controllers/categories.controllers';
 import validateCategory from '../helpers/validateCategory';
 import validateJWT from '../helpers/validateToken';
 
