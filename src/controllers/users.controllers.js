@@ -47,7 +47,8 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     let user = await User.findOne({ email });
-    const { firstname, role } = user;
+    console.log('user',user)
+    const { _id,firstname, lastname, role } = user;
     if (!user) {
       return res.status(400).json({
         errores: [{
@@ -71,12 +72,13 @@ export const loginUser = async (req, res) => {
         }]
       });
     }
-    const token = await generarJWT({ firstname, role });
+    const token = await generarJWT({ _id,firstname, lastname, role });
 
     res.status(200).json({
-      msg: 'El usuario es correcto',
+      //msg: 'El usuario es correcto',
       firstname: user.firstname,
-      _id: user._id,
+      lastname: user.lastname,
+      id: user._id,
       email: user.email,
       role: user.role,
       token,
@@ -232,14 +234,17 @@ export const changePassword = async (req, res) => {
 };
 
 export const revalidateToken = async (req, response) => {
-  const { firstname, role } = req.body;
-  const token = await generarJWT({ firstname, role });
+  const { _id,firstname, lastname, role } = req.usuario;
+
+  const token = await generarJWT({ _id, firstname, lastname, role });
 
   response.status(200).json({
     status: 'success',
     msg: 'Token generado correctamente!',
     res: {
+      id:_id,
       firstname,
+      lastname,
       role,
       token,
     },
