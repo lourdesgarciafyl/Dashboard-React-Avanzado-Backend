@@ -1,27 +1,13 @@
 import mongoose, { Schema } from 'mongoose';
 
 const saleSchema = new Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'usuario' },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
   saleDate: {
     type: 'Date',
     required: true,
     default: Date.now(),
   },
-  products: [
-    // {
-    //   product: { type: mongoose.Schema.Types.ObjectId, ref: 'product' },
-    //   quantity: {
-    //     type: Number,
-    //     required: true,
-    //     min: 0
-    //   },
-    //   subtotal: {
-    //     type: Number,
-    //     required: true,
-    //     min: 0,
-    //     max: 1000000,
-    //   },
-    // },
+  cartProducts: [
   ],
   status: {
     type: String,

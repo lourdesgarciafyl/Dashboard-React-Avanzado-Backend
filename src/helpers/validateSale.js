@@ -8,7 +8,7 @@ const validateSale = [
     check("saleDate")
     .notEmpty()
     .withMessage("La fecha es un dato obligatorio."),
-    check("products")
+    check("cartProducts")
     .notEmpty()
     .withMessage("Debe ingresar productos al pedido.")
     .isArray(),

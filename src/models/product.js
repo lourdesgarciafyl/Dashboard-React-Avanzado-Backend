@@ -15,8 +15,8 @@ const productSchema = new Schema({
         max: 100000
     },
     image:{
-        type: String,
-        required: true
+        public_id: String,
+        secure_url: String
     },
     detail:{
         type: String,

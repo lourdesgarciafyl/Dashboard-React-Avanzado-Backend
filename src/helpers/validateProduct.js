@@ -20,11 +20,11 @@ const validateProduct = [
             throw new Error("El precio debe entre $0 y $100000")
         }
     }),
-    check(`image`)
-    .notEmpty()
-    .withMessage("La imagen es un dato obligatorio")
-    .matches(/^(http(s?):)([/|.|\w|\s|-])*\.(?:png|jpe?g|gif|svg)$/)
-    .withMessage("Debe ingresar un link terminado en jpg, jpeg, gif o png"),
+    // check(`image`)
+    // .notEmpty()
+    // .withMessage("La imagen es un dato obligatorio")
+    // .matches(/^(http(s?):)([/|.|\w|\s|-])*\.(?:png|jpe?g|gif|svg)$/)
+    // .withMessage("Debe ingresar un link terminado en jpg, jpeg, gif o png"),
     check(`detail`)
     .notEmpty()
     .withMessage("El detalle del producto es obligatorio")

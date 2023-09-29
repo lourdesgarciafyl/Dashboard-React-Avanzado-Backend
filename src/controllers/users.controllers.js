@@ -236,10 +236,10 @@ export const registerClient = async (req, res) => {
 };
 
 export const changePassword = async (req, res) => {
-  const idUsuario = req.params.id;
+  const idUser = req.params.id;
   const { password } = req.body;
   try {
-    const user = await User.findById(idUsuario);
+    const user = await User.findById(idUser);
     if (!user) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
@@ -263,7 +263,7 @@ export const changePassword = async (req, res) => {
 };
 
 export const revalidateToken = async (req, response) => {
-  const { _id, firstname, lastname, role } = req.usuario;
+  const { _id, firstname, lastname, role } = req.user;
 
   const token = await generarJWT({ _id, firstname, lastname, role });
 
