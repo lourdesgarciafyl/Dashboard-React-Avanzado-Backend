@@ -1,9 +1,22 @@
 import { json } from "express";
 import Product from "../models/product";
+import { uploadImage, deleteImage } from '../helpers/cloudinary';
+import fs from 'fs-extra';
 
 export const createProduct = async (req, res) => {
     try{
         const newProduct = new Product(req.body);
+
+        if (req.files !== null && req.files !== undefined) {
+          const result = await uploadImage(req.files.image.tempFilePath);
+          newProduct.image = {
+            public_id: result.public_id,
+            secure_url: result.secure_url,
+          };
+    
+          await fs.unlink(req.files.image.tempFilePath);
+        }
+
         await newProduct.save();
         res.status(201).json({
             msg: "El producto fue creado correctamente"
@@ -67,7 +80,8 @@ export const getProduct = async (req, res) =>{
 
 export const deleteProduct = async (req, res) =>{
   try{
-     await Product.findByIdAndDelete(req.params.id);
+     const product = await Product.findByIdAndDelete(req.params.id);
+     await deleteImage(product.image.public_id);
      res.status(200).json({
       msg: "El producto fue eliminado correctamente"
      })
@@ -165,3 +179,26 @@ export const getActiveProducts = async (req, res) => {
     });
   }
 };
+
+export const getStockProduct = async (req, res)=> {
+  const idProduct = req.params.id;
+  try{
+    const stockProduct = await Product.findById(idProduct)
+    if (!stockProduct) {
+      return res.status(404).json({
+        errores: [{
+          msg: 'Producto no encontrado'
+        }]
+      });
+    }
+    res.status(200).json({msg: `El stock del producto es:`, stock: stockProduct.stock })
+
+  } catch (error) {
+    console.log(error)
+    res.status(404).json({
+    errores: [{
+    msg: 'Error. No se pudo obtener el stock del producto.'
+    }]
+    });
+  }
+}

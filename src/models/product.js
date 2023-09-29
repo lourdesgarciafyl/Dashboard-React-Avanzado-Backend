@@ -15,8 +15,8 @@ const productSchema = new Schema({
         max: 100000
     },
     image:{
-        type: String,
-        required: true
+        public_id: String,
+        secure_url: String
     },
     detail:{
         type: String,
@@ -24,6 +24,12 @@ const productSchema = new Schema({
         minLength: 5,
         maxLength: 500        
     },
+    stock: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0,
+      },
     status:{
         type: String,
         required: true

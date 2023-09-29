@@ -35,7 +35,12 @@ const userSchema = new Schema({
   avatar: {
     public_id: String,
     secure_url: String
-  }
+  },
+  favorites: {
+    type: [String],
+    default: []
+  },
+  cart: []
 });
 
 const User = mongoose.model(`user`, userSchema);

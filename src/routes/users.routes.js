@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {validateLogin, validateRegister, validateUser} from "../helpers/validateUser";
-import {changePassword, createUser, deleteUser, editUser, getListUsers, getUser, loginUser, registerClient, revalidateToken} from "../controllers/users.controllers";
+import {addProductToCart, changePassword, createUser, deleteUser, editUser, getListUsers, getUser, loginUser, registerClient, revalidateToken} from "../controllers/users.controllers";
 import validateJWT from "../helpers/validateToken";
 
 const router = Router();
@@ -11,5 +11,6 @@ router.route("/revalidatetoken").get(validateJWT, revalidateToken)
 router.route("/new").post([validateJWT, validateUser], createUser)
 router.route("/:id").delete(validateJWT, deleteUser).put(validateJWT, editUser).get(validateJWT, getUser)
 router.route("/newpassword/:id").put(validateJWT, changePassword)
+router.route("/cart/add").put(validateJWT, addProductToCart)
 
 export default router;
