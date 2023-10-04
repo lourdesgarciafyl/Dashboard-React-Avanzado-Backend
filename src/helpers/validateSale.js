@@ -1,36 +1,35 @@
-import resultadoValidacion from "./resultadoValidacion";
+import validationResults from "./validationResults";
 import { check } from "express-validator";
 
-const validarPedido = [
-    check("usuario")
+const validateSale = [
+    check("user")
     .notEmpty()
     .withMessage("El usuario es un dato obligatorio"),
-    check("fechaPedido")
+    check("saleDate")
     .notEmpty()
     .withMessage("La fecha es un dato obligatorio."),
-    check("productos")
+    check("cartProducts")
     .notEmpty()
     .withMessage("Debe ingresar productos al pedido.")
     .isArray(),
-    check("estado")
+    check("status")
     .notEmpty()
     .withMessage("El estado es un dato obligatorio")
-    .isIn(["En proceso","Entregado"])
+    .isIn(["Cancelada","Realizada"])
     .withMessage("Debe elegir una opción válida"),
-    check("precioTotal")
+    check("totalPrice")
     .notEmpty()
     .withMessage("El precio total es un dato obligatorio")
     .isNumeric()
     .custom((value) => {
-        if(value >= 100 && value <= 500000){
+        if(value >= 0 && value <= 5000000){
             return true;
         } else {
-            throw new Error("El precio debe entre $100 y $500000")
+            throw new Error("El precio debe entre $0 y $5000000")
         }
     }),
    
-    (req, res, next) => {resultadoValidacion(req, res, next)}
+    (req, res, next) => {validationResults(req, res, next)}
 ]
 
-
-export default validarPedido;
+export default validateSale;

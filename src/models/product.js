@@ -1,39 +1,45 @@
 import mongoose, { Schema } from "mongoose";
 
-const productoSchema = new Schema({
-    nombreProducto:{
+const productSchema = new Schema({
+    productName:{
         type: String,
         required: true,
         unique: true,
         minLength: 3,
         maxLength: 50
     },
-    precio:{
+    price:{
         type: Number,
         required: true,
-        min: 100,
-        max: 10000
+        min: 0,
+        max: 100000
     },
-    imagen:{
-        type: String,
-        required: true
+    image:{
+        public_id: String,
+        secure_url: String
     },
-    detalle:{
+    detail:{
         type: String,
         required: true,
         minLength: 5,
         maxLength: 500        
     },
-    estado:{
+    stock: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0,
+      },
+    status:{
         type: String,
         required: true
     },
-    categoria:{
+    category:{
         type: String,
         required: true
     }
 })
 
-const Producto = mongoose.model(`producto`, productoSchema) 
+const Product = mongoose.model(`product`, productSchema) 
 
-export default Producto;
+export default Product;

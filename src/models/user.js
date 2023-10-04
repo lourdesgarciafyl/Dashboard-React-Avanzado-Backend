@@ -1,13 +1,13 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
-const usuarioSchema = new Schema({
-  nombreUsuario: {
+const userSchema = new Schema({
+  firstname: {
     type: String,
     required: true,
     minLength: 3,
     maxLength: 30,
   },
-  apellidoUsuario: {
+  lastname: {
     type: String,
     required: true,
     minLength: 3,
@@ -23,18 +23,26 @@ const usuarioSchema = new Schema({
     type: String,
     required: true,
     minLength: 8,
-   
   },
-  estado: {
+  status: {
     type: String,
     required: true,
   },
-  perfil: {
+  role: {
     type: String,
     required: true,
   },
+  avatar: {
+    public_id: String,
+    secure_url: String
+  },
+  favorites: {
+    type: [String],
+    default: []
+  },
+  cart: []
 });
 
-const Usuario = mongoose.model(`usuario`, usuarioSchema);
+const User = mongoose.model(`user`, userSchema);
 
-export default Usuario;
+export default User;
