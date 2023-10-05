@@ -1,14 +1,14 @@
-# Proyecto final - RollingCode
+# Proyecto Ventas de Productos de Ropas Deportivas - Backend React Avanzado - RollingCode
 
 ## Alcance del proyecto 💡
 
 En este proyecto los alumnos en forma grupal se dividirán las tareas necesarias para diseñar una aplicación
-para que los clientes de un restaurante elijan entre distintos productos y puedan hacer su pedido.
+para que los clientes puedan administrar usuarios , productos y ventas de ropas deportivas.
 
 El alcance de este proyecto se centra en realizar todos los pasos del CRUD y deberá contar con un login con
 diferentes opciones dependiendo el usuario que se loguea. Se considera que solo el usuario administrador
 podrá administrar las diferentes opciones de menú, mientras que los clientes deberán iniciar su sesión o
-registrarse para poder solicitar un pedido.
+registrarse.
 
 ## Tecnologias / Herramientas 🛠
 
@@ -25,7 +25,7 @@ registrarse para poder solicitar un pedido.
 
 ## Link a la API en producción:
 
-- [Vercel](https://yumyum-backend.vercel.app/)
+- [Vercel](https://dashboard-react-avanzado-backend.vercel.app/)
 
 ## Pasos para clonar y ejecutar el Servidor 🖥
 
@@ -37,13 +37,13 @@ Sigue estos pasos para clonar y ejecutar el servidor en tu entorno local:
 2.  **Clona el repositorio:** En tu línea de comandos, ejecuta el siguiente comando para clonar el repositorio:
 
     ```
-    git clone https://github.com/lourdesgarciafyl/PF-yumyum-backend
+    git clone https://github.com/lourdesgarciafyl/Dashboard-React-Avanzado-Backend.git
     ```
 
 3.  **Accede al directorio:** Ve al directorio de la aplicación clonada:
 
     ```
-    cd <PF-yumyum-backend>
+    cd <Dashboard-React-Avanzado-Backend>
     ```
 
 4.  **Instala las dependencias:** Ejecuta el siguiente comando para instalar las dependencias de la aplicación:
@@ -64,148 +64,138 @@ Sigue estos pasos para clonar y ejecutar el servidor en tu entorno local:
 
 - Se recomienda usar [Postman](https://www.postman.com/) para las solicitudes al servidor.
 
-## Llamadas a la API
-
-- VITE_API_PRODUCTO=https://yumyum-backend.vercel.app/apiyumyum/productos
-- VITE_API_USUARIO=https://yumyum-backend.vercel.app/apiyumyum/auth
-- VITE_API_CATEGORIA=https://yumyum-backend.vercel.app/apiyumyum/categorias
-- VITE_API_PEDIDO=https://yumyum-backend.vercel.app/apiyumyum/pedidos
-
-## Variables de entorno
-- DATABASE_URI=mongodb+srv://adminYumyum:PeefD0x84Z3aR9Wf@yumyumdb.ukai0yb.mongodb.net/yumyum
-- SECRET_JWT=81^pR!jKbx3d51Y40Ab
-- YOUR_PUBLIC_KEY=PpCDOOp5Om_fIcrxQ
-- YOUR_PRIVATE_KEY=mywdf3cd-V_rjiXc69oc7
-- YOUR_SERVICE_ID=service_58bhdtn
-- YOUR_TEMPLATE_ID=template_f685fp9
-
 ## Métodos :
+
+## Métodos de Usuarios:
+
+| Método | #Url de User          | #Action                      |
+| ------ | --------------------- | ---------------------------- |
+| POST   | /auth/registerclient  | Registrar un cliente         |
+| POST   | /auth/new             | Registrar un administrador   |
+| POST   | /auth/login           | Loguear un usuario           |
+| POST   | /auth                 | Crear nuevo usuario          |
+| GET    | /auth                 | Muestra la lista de usuarios |
+| GET    | /auth/:id             | Busca un usuario por su id   |
+| PUT    | /auth/newpassword/:id | Crear nueva contraseña       |
+| GET    | /auth/revalidatetoken | Revalidar token              |
+
+Ejemplo de Body en el envío de Crear nuevo usuario administrador (form-data):
+
+```
+   {
+      "firstname": "Juan",
+      "lastname": "Perez",
+      "email": "juanperez@gmail.com",
+      "password": "12345678Aa",
+      "status": "Activo",
+      "role": "Cliente",
+      "image": "link de la imagen de un avatar"
+   }
+```
+
+Ejemplo de Body en el envío de Registro de un cliente nuevo con permiso normal:
+
+```
+   {
+      "firstname": "Jose",
+      "lastname": "Cliente",
+      "email": "josecliente@cliente.com",
+      "password": "123456Aa"
+   }
+```
 
 ## Métodos de productos:
 
-| Método | #Url de productos         | #Acción                          |
-| ------ | ------------------------- | -------------------------------- |
-| POST   | /productos                | Crear nuevo producto             |
-| GET    | /productos                | Muestra la lista de productos    |
-| PUT    | /productos/:id            | Edita un producto por su id      |
-| DELETE | /productos/:id            | Borra un producto por su id      |
-| GET    | /productos/:id            | Busca un producto por su id      |
-| PUT    | /productos/activar/:id    | Activar un producto por su id    |
-| PUT    | /productos/desactivar/:id | Desactivar un producto por su id |
+| Método | #Url de products             | #Action                              |
+| ------ | ---------------------------- | ------------------------------------ |
+| POST   | /products                    | Crear nuevo producto                 |
+| GET    | /products /actives           | Muestra la lista de productos        |
+| PUT    | /products/:id                | Edita un producto por su id          |
+| DELETE | /products/:id                | Borra un producto por su id          |
+| GET    | /products/:id                | Busca un producto por su id          |
+| PUT    | /products/activate/:id       | Activar un producto por su id        |
+| PUT    | /products/desactivate/:id    | Desactivar un producto por su id     |
+| GET    | /products/category/:category | Buscar producto por nombre de categ. |
+| GET    | /products/stock              | Traer el stock de un producto.       |
 
-Ejemplo de Body en el envío de Crear producto:
+Ejemplo de Body en el envío de Crear producto (form-data):
 
 ```
 {
-      "nombreProducto": "Pizza Primavera",
-      "precio": 3200,
-      "imagen": "https://res.cloudinary.com/dvcq6vatc/image/upload/v1689383714/yumyum/pizzaPrimavera_cl5yyj.png",
-      "detalle": "La Pizza Primavera está elaborada con salsa de tomates, jamón, muzarella, tomates al natural, huevo picado y aceitunas.",
-      "estado": "Activo",
-      "categoria": "Pizza"
+      "productName": "Remera Mangas cortas XL color amarilla",
+      "price": 9500,
+      "image": "link de la imagen",
+      "detail": "Descripción de la remera.",
+      "stock": 33,
+      "status": "Activo",
+      "categoria": "Remera"
 }
 ```
 
 ## Métodos de categorias:
 
-| Método | #Url de categoria   | #Acción                        |
+| Método | #Url de categorie   | #Action                        |
 | ------ | ------------------- | ------------------------------ |
-| POST   | /categorias         | Crear nueva categoria          |
-| GET    | /categorias         | Muestra todas las categorias   |
-| GET    | /categorias/activas | Muestra las categorias activas |
+| POST   | /categories         | Crear nueva categoria          |
+| GET    | /categories         | Muestra todas las categorias   |
+| GET    | /categories/actives | Muestra las categorias activas |
 
 Ejemplo de Body en crear categoria:
 
 ```
 {
-      "nombreCategoria": "Pizza",
-      "estado": "Activo"
+      "categoryName": "Pizza",
+      "status": "Activo"
 }
 ```
 
-## Métodos de pedidos:
+## Métodos de ventas:
 
-| Método | #Url de pedidos        | #Acción                              |
-| ------ | ---------------------- | ------------------------------------ |
-| POST   | /pedidos               | Crear nuevo pedido                   |
-| GET    | /pedidos               | Muestra la lista de pedidos          |
-| PUT    | /pedidos/enproceso/:id | Edita el estado del pedido por su id |
-| PUT    | /pedidos/entregado/:id | Edita el estado del pedido por su id |
-| GET    | /pedidos/:id           | Muestra un pedido por su id          |
+| Método | #Url de sales         | #Action                     |
+| ------ | --------------------- | --------------------------- |
+| POST   | /sales                | Crear nueva venta           |
+| GET    | /sales                | Muestra la lista de ventas  |
+| DELETE | /sales/:id            | Borra una venta por su id   |
+| PUT    | /sales/cancelsale/:id | Cancela la venta por su id  |
+| GET    | /sales/:id            | Muestra una venta por su id |
 
-Ejemplo de Body en crear pedido:
+Ejemplo de Body en crear una venta:
 
 ```
  {
-    "usuario": {
-        "nombreUsuario": "José",
-        "apellidoUsuario": "Perez",
-        "email": "jperez@cliente.com"
-    },
-    "fechaPedido": "2023-07-26T22:29:01.000Z",
-    "productos": [
+    "user": "idUser",
+    "saleDate": "2023-10-04T21:03:01.000Z",
+    "cartProducts": [
         {
-            "producto": {
-                "nombreProducto": "Pizza Muzzarella",
-                "precio": 3000,
-                "imagen": "https://res.cloudinary.com/dvcq6vatc/image/upload/v1689383714/yumyum/pizzaMuzzarela_rfihh1.png",
-                "detalle": "Pizza Muzzarella elaborada con salsa de tomate, muzzarella, aceitunas y orégano",
-                "estado": "Activo",
-                "categoria": "Pizza"
+             {
+                "_id": "2123213",
+                "productName": "Remera Nike",
+                "price": 12000,
+                "quantity": 2,
             },
-            "cantidad": 2,
-            "subtotalItem": 6000,
-            "_id": "64c45b837bd3952422d9eae2"
+             {
+                "_id": "3232312",
+                "productName": "Pantalón Nike",
+                "price": 15000,
+                "quantity": 1,
+            },
+
         },
     ],
-    "estado": "En proceso",
-    "precioTotal": 6000
+    "status": "Realizada",
+    "totalPrice": 39000
 }
-```
-
-## Métodos de Usuarios:
-
-| Método | #Url de Usuarios        | #Acción                      |
-| ------ | ----------------------- | ---------------------------- |
-| POST   | /registro               | Registrar un cliente         |
-| POST   | /auth/nuevo             | Registrar un administrador   |
-| POST   | /auth/login             | Loguear un usuario           |
-| POST   | /auth                   | Crear nuevo usuario          |
-| GET    | /auth                   | Muestra la lista de usuarios |
-| GET    | /auth/:id               | Busca un usuario por su id   |
-| PUT    | /auth/nuevopassword/:id | Crear nueva contraseña       |
-
-Ejemplo de Body en el envío de Crear nuevo usuario administrador:
-
-```
-   {
-      "nombre": "Juan",
-      "apellido": "Perez",
-      "email": "juanperez@gmail.com",
-      "password": "123456aA",
-      "estado": "Activo",
-      "rol": "Cliente"
-   }
-```
-
-Ejemplo de Body en el envío de Crear nuevo usuario cliente:
-
-```
-   {
-      "nombreUsuario": "Juan",
-      "apellidoUsuario": "Perez",
-      "email": "juanperez@gmail.com",
-      "password": "123456aA"
-   }
 ```
 
 ## Repositorio FrontEnd 📌
 
-[FrontEnd YumYum](https://github.com/lourdesgarciafyl/PF-YumYum-frontend)
+[FrontEnd](https://github.com/cristianq3/Dashboard-React-Avanzado-RollingCode)
 
 ## Integrantes del grupo :
 
-- [Agustin Baza](https://github.com/agustinbaza).
-- [Lourdes Garcia](https://github.com/lourdesgarciafyl).
-- [Juan Gerardo Romero Uro](https://github.com/jgromerou).
-- [Cristian Quiroga](https://github.com/cristianq3).
+- [Lourdes Garcia](https://github.com/lourdesgarciafyl)
+- [María Laura Elias](https://github.com/marialauraelias)
+- [Ariel Medina](https://github.com/arielm1000)
+- [Herrera Nicolas](https://github.com/herreranicolas)
+- [Cristian Quiroga](https://github.com/cristianq3)
+- [Juan Gerardo Romero Uro](https://github.com/jgromerou)d
