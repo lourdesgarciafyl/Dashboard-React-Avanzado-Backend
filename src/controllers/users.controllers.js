@@ -12,7 +12,11 @@ export const createUser = async (req, res) => {
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
-        msg: 'ya existe un usuario con el correo enviado',
+        errores: [
+          {
+            msg: 'Ya existe un usuario con ese correo electrónico',
+          },
+        ],
       });
     }
     user = new User(req.body);
