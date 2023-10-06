@@ -28,7 +28,7 @@ export const createUser = async (req, res) => {
         secure_url: result.secure_url,
       };
 
-      await fs.unlink(req.files.image.tempFilePath);
+      // await fs.unlink(req.files.image.tempFilePath);
     }
     const salt = bcrypt.genSaltSync(10);
     user.password = bcrypt.hashSync(password, salt);
@@ -120,7 +120,9 @@ export const deleteUser = async (req, res) => {
       });
     }
     await User.findByIdAndDelete(req.params.id);
-    await deleteImage(user.avatar.public_id);
+    if(req.params.image !== undefined) {
+      await deleteImage(user.avatar.public_id);
+    }
     res.status(200).json({
       msg: 'Usuario eliminado exitosamente.',
     });
