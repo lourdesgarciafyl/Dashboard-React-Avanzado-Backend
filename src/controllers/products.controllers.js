@@ -1,4 +1,3 @@
-import { json } from "express";
 import Product from "../models/product";
 import { uploadImage, deleteImage } from '../helpers/cloudinary';
 import fs from 'fs-extra';
@@ -6,7 +5,6 @@ import fs from 'fs-extra';
 export const createProduct = async (req, res) => {
     try{
         const newProduct = new Product(req.body);
-
         if (req.files !== null && req.files !== undefined) {
           const result = await uploadImage(req.files.image.tempFilePath);
           newProduct.image = {
@@ -22,6 +20,7 @@ export const createProduct = async (req, res) => {
             msg: "El producto fue creado correctamente"
         })
     }catch(error){
+      console.log(error)
         res.status(400).json({
           errores: [{
             msg: 'Error. No se pudo crear el producto'
