@@ -60,7 +60,7 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({
         errores: [
           {
-            msg: 'Email o password no válido - email',
+            msg: 'Email o password no válido',
           },
         ],
       });
@@ -69,7 +69,7 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({
         errores: [
           {
-            msg: 'El usuario no se encuentra activo - estado',
+            msg: 'El usuario está deshabilitado.',
           },
         ],
       });
@@ -80,7 +80,7 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({
         errores: [
           {
-            msg: 'Email o password no válido - password',
+            msg: 'Email o password no válido',
           },
         ],
       });
@@ -100,7 +100,7 @@ export const loginUser = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: 'Usuario o Password incorrecto',
+          msg: 'Email o password incorrecto',
         },
       ],
     });
@@ -340,6 +340,78 @@ export const addProductToCart = async (req, res) => {
       errores: [
         {
           msg: 'Error al agregar al carrito el producto.',
+        },
+      ],
+    });
+  }
+};
+
+export const activateUser = async (req, res) => {
+  const idUser = req.params.id;
+  try {
+    const user = await User.findById(idUser);
+    if (!user) {
+      return res.status(404).json({ 
+        errores: [
+          {
+            msg: 'Usuario no encontrado.',
+          },
+        ],
+      });
+    }
+    if (user.status === 'Activo') {
+      return res.status(404).json({ 
+        errores: [
+          {
+            msg: 'El usuario ya se encuentra activo.',
+          },
+        ], 
+      });
+    }
+    user.status = 'Activo';
+    await user.save();
+    res.status(200).json({
+      msg: 'Se activó el usuario correctamente.',
+    });
+  } catch (error) {
+    res.status(404).json({
+      errores: [
+        {
+          msg: 'Error al activar el usuario.',
+        },
+      ],
+    });
+  }
+};
+
+export const desactivateUser = async (req, res) => {
+  const idUser = req.params.id;
+  try {
+    const user = await User.findById(idUser);
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    if (user.status === 'Inactivo') {
+      return res
+        .status(404)
+        .json({ 
+          errores: [
+            {
+              msg: 'El usuario ya se encuentra inactivo.',
+            },
+          ], 
+        });
+    }
+    user.status = 'Inactivo';
+    await user.save();
+    res.status(200).json({
+      mensaje: 'Se desactivó el usuario correctamente.',
+    });
+  } catch (error) {
+    res.status(404).json({
+      errores: [
+        {
+          msg: 'Error al desactivar el usuario.',
         },
       ],
     });
