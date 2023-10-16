@@ -8,6 +8,12 @@ const saleSchema = new Schema({
     default: Date.now(),
   },
   cartProducts: [
+    {
+      _id: { type: mongoose.Schema.Types.ObjectId, ref: 'product' },
+      productName: String,
+      price: Number,
+      quantity: Number
+    }
   ],
   status: {
     type: String,

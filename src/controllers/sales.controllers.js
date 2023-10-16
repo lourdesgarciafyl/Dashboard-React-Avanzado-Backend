@@ -67,8 +67,8 @@ export const getListSales = async (req, res) => {
   try {
     const sales = await Sale.find()
       .populate({
-        path: 'cartProducts.product',
-        select: '-_id -__v',
+        path: 'cartProducts._id',
+        select: '-__v',
       })
       .populate({
         path: 'user',
