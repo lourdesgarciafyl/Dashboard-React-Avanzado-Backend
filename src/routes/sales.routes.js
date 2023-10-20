@@ -19,11 +19,11 @@ const router = Router();
 router.route("/").post(validateSale, createSale).get(validateJWT, getListSales);
 router.route("/:id").get(validateJWT, getSale).delete(validateJWT, deleteSale);
 router.route("/cancelsale/:id").put(validateJWT, cancelSale);
-router.route("/filter/dailySales").get(getDailySales);
-router.route("/filter/weeklySales").get(getWeeklySales);
-router.route("/filter/monthlySales").get(getMonthlySales);
-router.route("/filter/yearlySales").get(getYearlySales);
-router.route("/filter/byProduct").get(getSalesByProduct);
-router.route("/filter/byCategory").get(getSalesByCategory);
+router.route("/filter/dailySales").get(validateJWT, getDailySales);
+router.route("/filter/weeklySales").get(validateJWT, getWeeklySales);
+router.route("/filter/monthlySales").get(validateJWT, getMonthlySales);
+router.route("/filter/yearlySales").get(validateJWT, getYearlySales);
+router.route("/filter/byProduct").get(validateJWT, getSalesByProduct);
+router.route("/filter/byCategory").get(validateJWT, getSalesByCategory);
 
 export default router;
