@@ -323,15 +323,7 @@ export const getMonthlySales = async (req, res) => {
   try {
     const date = new Date();
     const monthStartDate = new Date(date.getFullYear(), date.getMonth(), 1);
-    const monthEndDate = new Date(
-      date.getFullYear(),
-      date.getMonth() + 1,
-      0,
-      23,
-      59,
-      59,
-      999
-    );
+    const monthEndDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
     const monthStartDateString = monthStartDate.toISOString().split("T")[0];
     const monthEndDateString = monthEndDate.toISOString().split("T")[0];
@@ -389,6 +381,139 @@ export const getMonthlySales = async (req, res) => {
       errores: [
         {
           msg: "Error al intentar listar las ventas del mes.",
+        },
+      ],
+    });
+  }
+};
+
+// Yearly Sales
+
+export const getYearlySales = async (req, res) => {
+  try {
+    const date = new Date();
+    const yearStartDate = new Date(date.getFullYear(), 0, 1);
+    const yearEndDate = new Date(date.getFullYear(), 11, 31);
+
+    const yearStartDateString = yearStartDate.toISOString().split("T")[0];
+    const yearEndDateString = yearEndDate.toISOString().split("T")[0];
+
+    const sales = await Sale.find(
+      { saleDate: { $gte: yearStartDateString, $lte: yearEndDateString } },
+      "id saleDate totalPrice"
+    );
+
+    const yearlySales = await Sale.aggregate([
+      {
+        $match: {
+          saleDate: {
+            $gte: yearStartDateString,
+            $lte: yearEndDateString,
+          },
+        },
+      },
+      {
+        $project: {
+          saleMonth: {
+            $toInt: { $substr: ["$saleDate", 5, 2] }, // Obtén el mes de la cadena
+          },
+          totalSalesPrice: "$totalPrice",
+          totalSalesQuantity: 1,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            saleMonth: "$saleMonth",
+          },
+          totalSalesPrice: { $sum: "$totalSalesPrice" },
+          totalSalesQuantity: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          saleMonth: {
+            $switch: {
+              branches: [
+                {
+                  case: { $eq: ["$_id.saleMonth", 1] },
+                  then: { monthName: "Enero", monthNumber: 1 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 2] },
+                  then: { monthName: "Febrero", monthNumber: 2 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 3] },
+                  then: { monthName: "Marzo", monthNumber: 3 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 4] },
+                  then: { monthName: "Abril", monthNumber: 4 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 5] },
+                  then: { monthName: "Mayo", monthNumber: 5 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 6] },
+                  then: { monthName: "Junio", monthNumber: 6 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 7] },
+                  then: { monthName: "Julio", monthNumber: 7 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 8] },
+                  then: { monthName: "Agosto", monthNumber: 8 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 9] },
+                  then: { monthName: "Septiembre", monthNumber: 9 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 10] },
+                  then: { monthName: "Octubre", monthNumber: 10 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 11] },
+                  then: { monthName: "Noviembre", monthNumber: 11 },
+                },
+                {
+                  case: { $eq: ["$_id.saleMonth", 12] },
+                  then: { monthName: "Diciembre", monthNumber: 12 },
+                },
+              ],
+              default: "Desconocido",
+            },
+          },
+          totalSalesPrice: 1,
+          totalSalesQuantity: 1,
+        },
+      },
+      {
+        $sort: { "saleMonth.monthNumber": 1 },
+      },
+    ]);
+
+    const totalSales = {
+      currentDate,
+      yearlySales,
+      totalYearSalesQuantity: sales.length,
+      totalYearSalesPrice:
+        sales.length > 0
+          ? sales.map((sale) => sale.totalPrice).reduce((a, b) => a + b)
+          : 0,
+    };
+
+    res.status(200).json(totalSales);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      errores: [
+        {
+          msg: "Error al intentar listar las ventas del año.",
         },
       ],
     });

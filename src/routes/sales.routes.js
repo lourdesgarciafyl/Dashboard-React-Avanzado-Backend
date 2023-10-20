@@ -8,8 +8,8 @@ import {
   getListSales,
   getMonthlySales,
   getSale,
-  getSalesByDate,
   getWeeklySales,
+  getYearlySales,
 } from "../controllers/sales.controllers";
 import validateJWT from "../helpers/validateToken";
 
@@ -20,5 +20,6 @@ router.route("/cancelsale/:id").put(validateJWT, cancelSale);
 router.route("/filter/dailySales").get(getDailySales);
 router.route("/filter/weeklySales").get(getWeeklySales);
 router.route("/filter/monthlySales").get(getMonthlySales);
+router.route("/filter/yearlySales").get(getYearlySales);
 
 export default router;
