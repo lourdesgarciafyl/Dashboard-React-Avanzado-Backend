@@ -519,3 +519,97 @@ export const getYearlySales = async (req, res) => {
     });
   }
 };
+
+export const getSalesByProduct = async (req, res) => {
+  try {
+    const mostSoldProducts = await Sale.aggregate([
+      {
+        $unwind: "$cartProducts",
+      },
+      {
+        $group: {
+          _id: "$cartProducts.productName",
+          totalQuantity: {
+            $sum: "$cartProducts.quantity",
+          },
+          totalPrice: {
+            $sum: "$cartProducts.price",
+          },
+        },
+      },
+      {
+        $sort: {
+          totalQuantity: -1,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          productName: "$_id",
+          totalQuantity: 1,
+          totalPrice: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json(mostSoldProducts);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      errores: [
+        {
+          msg: "Error al intentar listar los productos más vendidos.",
+        },
+      ],
+    });
+  }
+};
+
+export const getSalesByCategory = async (req, res) => {
+  try {
+    const mostSoldProductsByCategory = await Sale.aggregate([
+      {
+        $unwind: "$cartProducts",
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "cartProducts._id",
+          foreignField: "_id",
+          as: "cartProducts.productInfo",
+        },
+      },
+      {
+        $unwind: "$cartProducts.productInfo",
+      },
+      {
+        $group: {
+          _id: "$cartProducts.productInfo.category",
+          totalQuantity: { $sum: "$cartProducts.quantity" },
+          totalPrice: { $sum: "$cartProducts.price" },
+        },
+      },
+      {
+        $sort: { totalQuantity: -1 },
+      },
+      {
+        $project: {
+          _id: 0,
+          category: "$_id",
+          totalQuantity: 1,
+          totalPrice: 1,
+        },
+      },
+    ]);
+    res.status(200).json(mostSoldProductsByCategory);
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      errores: [
+        {
+          msg: "Error al intentar listar los productos más vendidos según categoría.",
+        },
+      ],
+    });
+  }
+};

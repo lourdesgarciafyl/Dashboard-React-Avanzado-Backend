@@ -8,6 +8,8 @@ import {
   getListSales,
   getMonthlySales,
   getSale,
+  getSalesByCategory,
+  getSalesByProduct,
   getWeeklySales,
   getYearlySales,
 } from "../controllers/sales.controllers";
@@ -21,5 +23,7 @@ router.route("/filter/dailySales").get(getDailySales);
 router.route("/filter/weeklySales").get(getWeeklySales);
 router.route("/filter/monthlySales").get(getMonthlySales);
 router.route("/filter/yearlySales").get(getYearlySales);
+router.route("/filter/byProduct").get(getSalesByProduct);
+router.route("/filter/byCategory").get(getSalesByCategory);
 
 export default router;
