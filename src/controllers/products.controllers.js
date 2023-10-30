@@ -1,10 +1,14 @@
 import Product from "../models/product";
+import Notifications from "../models/Notifications";
 import { uploadImage, deleteImage } from "../helpers/cloudinary";
 import fs from "fs-extra";
 
 export const createProduct = async (req, res) => {
   try {
     const newProduct = new Product(req.body);
+    //importo socketsio
+    //const io = req.app.get('socketio');
+
     if (req.files !== null && req.files !== undefined) {
       const result = await uploadImage(req.files.image.tempFilePath);
       newProduct.image = {
@@ -16,6 +20,18 @@ export const createProduct = async (req, res) => {
     }
 
     await newProduct.save();
+    //guardo en Mongo  y envio notificacion de producto creado
+    let newNotification = new Notifications({});
+    newNotification.title = newProduct.productName;
+    newNotification.description = newProduct.price;
+    newNotification.avatar = '/assets/images/avatars/add.png';
+    newNotification.type = 'add';
+    newNotification.createdAt = new Date();
+    newNotification.isUnRead = true;
+    await newNotification.save();
+    
+    io.emit("Notificacion-New", "Notificacion-New");
+
     res.status(201).json({
       msg: "El producto fue creado correctamente",
       product: newProduct,
@@ -49,7 +65,22 @@ export const getListProducts = async (req, res) => {
 
 export const editProduct = async (req, res) => {
   try {
+    //importo socketsio
+    const io = req.app.get('socketio');
     await Product.findByIdAndUpdate(req.params.id, req.body);
+
+    //guardo en Mongo  y envio notificacion de producto edit
+    let newNotification = new Notifications({});
+    newNotification.title = req.body.productName;
+    newNotification.description = req.body.price;
+    newNotification.avatar = '/assets/images/avatars/pen.png';
+    newNotification.type = 'pen';
+    newNotification.createdAt = new Date();
+    newNotification.isUnRead = true;
+    await newNotification.save();
+    
+    io.emit("Notificacion-New", "Notificacion-New")
+
     res.status(200).json({
       msg: "El producto fue editado correctamente.",
     });
@@ -90,6 +121,22 @@ export const getProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   try {
+    //importo socketsio
+    const io = req.app.get('socketio');
+    const deleProduct = await Product.findById(req.params.id);
+
+    //guardo en Mongo  y envio notificacion de producto delete
+    let newNotification = new Notifications({});
+    newNotification.title = deleProduct.productName;
+    newNotification.description = deleProduct.price;
+    newNotification.avatar = '/assets/images/avatars/delete.png';
+    newNotification.type = 'delete';
+    newNotification.createdAt = new Date();
+    newNotification.isUnRead = true;
+    await newNotification.save();
+    
+    io.emit("Notificacion-New", "Notificacion-New")
+
     const product = await Product.findByIdAndDelete(req.params.id);
     await deleteImage(product.image.public_id);
     res.status(200).json({
