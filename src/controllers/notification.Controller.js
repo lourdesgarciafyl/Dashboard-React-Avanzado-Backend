@@ -18,7 +18,7 @@ exports.crearNotification = async (req, res) => {
 // Listar notifications
 exports.notificationList = async (req, res) => {
   try {
-      const notificationData = await Notifications.find({}).sort({createdAt:1});
+      const notificationData = await Notifications.find({}).sort({createdAt:-1});
       res.json({ notificationData });
   } catch (error) {
       console.log(error);

@@ -46,12 +46,25 @@ app.use(`/api/notifications`, notificationsRouter);
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
     cors: {
-        origin: "http://localhost:5173"
+        origin: "http://localhost:5173",
+        //CAMBIAR
+        //origin: "https://example.com",
     }    
 });
-
+let clientes_cenectados = 0;
 io.on("connection", (socket) => {
-  console.log('Cliente conectado')
+  console.log('Cliente conectado ' + socket.id)
+  clientes_cenectados++;
+
+  io.emit('Actualizar', clientes_cenectados);
+
+  socket.on('disconnect', function () {
+    console.log('Cliente deconectado ' + socket.id)
+    clientes_cenectados--;
+    io.emit('Actualizar', clientes_cenectados);
+  });
+  console.log(clientes_cenectados, 'clientes connect')
+
 });
 
 app.set('socketio', io);// aqui asignas el socket global
