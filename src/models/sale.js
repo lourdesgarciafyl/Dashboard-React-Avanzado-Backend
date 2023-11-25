@@ -1,20 +1,26 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
 const saleSchema = new Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
   saleDate: {
-    type: "String",
+    type: String,
     required: true,
     default: Date.now(),
   },
   cartProducts: [
     {
-      _id: { type: mongoose.Schema.Types.ObjectId, ref: "product" },
+      _id: { type: mongoose.Schema.Types.ObjectId, ref: 'product' },
       productName: String,
       price: Number,
       quantity: Number,
     },
   ],
+  paymentType: {
+    type: String,
+    required: true,
+    MinLength: 3,
+    MaxLength: 20,
+  },
   status: {
     type: String,
     required: true,
@@ -25,9 +31,8 @@ const saleSchema = new Schema({
     type: Number,
     required: true,
     min: 0,
-    max: 5000000,
   },
 });
 
-const Sale = mongoose.model("sale", saleSchema);
+const Sale = mongoose.model('sale', saleSchema);
 export default Sale;
