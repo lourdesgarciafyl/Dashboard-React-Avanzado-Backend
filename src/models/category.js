@@ -8,6 +8,10 @@ const categorySchema = new Schema({
     minLength: 2,
     maxLength: 20,
   },
+  image: {
+    type: String,
+    required: true,
+  },
   status: {
     type: String,
     required: true,
