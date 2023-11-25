@@ -3,6 +3,7 @@ import { deleteImage, uploadImage } from '../helpers/cloudinary';
 import fs from 'fs-extra';
 import generarJWT from '../helpers/tokenLogin';
 import User from '../models/user';
+import Notifications from '../models/Notifications';
 import bcrypt from 'bcrypt';
 import Product from '../models/product';
 
@@ -10,6 +11,9 @@ export const createUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     let user = await User.findOne({ email });
+    //importo socketsio
+    const io = req.app.get('socketio');
+
     if (user) {
       return res.status(400).json({
         errores: [
@@ -34,6 +38,18 @@ export const createUser = async (req, res) => {
     user.password = bcrypt.hashSync(password, salt);
 
     await user.save();
+    //guardo en Mongo  y envio notificacion de usuario creado
+    let newNotification = new Notifications({});
+    newNotification.title = user.firstname + " " + user.lastname;
+    newNotification.description = user.email;
+    newNotification.avatar = '/assets/images/avatars/add.png';
+    newNotification.type = 'add';
+    newNotification.createdAt = new Date();
+    newNotification.isUnRead = true;
+    await newNotification.save();
+    
+    io.emit("Notificacion-New", "Notificacion-New")
+
     res.status(201).json({
       msg: 'usuario creado',
       firstname: user.firstname,
@@ -109,6 +125,8 @@ export const loginUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
+    //importo socketsio
+    const io = req.app.get('socketio');
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(400).json({
@@ -119,10 +137,23 @@ export const deleteUser = async (req, res) => {
         ],
       });
     }
+    //guardo en Mongo la notificacion de usuario delete
+    let newNotification = new Notifications({});
+    newNotification.title = user.firstname + " " + user.lastname;
+    newNotification.description = user.email;
+    newNotification.avatar = '/assets/images/avatars/delete.png';
+    newNotification.type = 'delete';
+    newNotification.createdAt = new Date();
+    newNotification.isUnRead = true;
+    await newNotification.save();
+
+    io.emit("Notificacion-New", "Notificacion-New");
+
     await User.findByIdAndDelete(req.params.id);
     if (req.params.image !== undefined) {
       await deleteImage(user.avatar.public_id);
     }
+    
     res.status(200).json({
       msg: 'Usuario eliminado exitosamente.',
     });
@@ -139,6 +170,9 @@ export const deleteUser = async (req, res) => {
 
 export const editUser = async (req, res) => {
   try {
+    //importo socketsio
+    const io = req.app.get('socketio');
+
     const { email, firstname, lastname, status, role } = req.body;
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -156,6 +190,18 @@ export const editUser = async (req, res) => {
     user.status = status;
     user.role = role;
     await user.save();
+    //guardo en Mongo  y envio notificacion de usuario edit
+    let newNotification = new Notifications({});
+    newNotification.title = user.firstname + " " + user.lastname;
+    newNotification.description = user.email;
+    newNotification.avatar = '/assets/images/avatars/pen.png';
+    newNotification.type = 'pen';
+    newNotification.createdAt = new Date();
+    newNotification.isUnRead = true;
+    await newNotification.save();
+    
+    io.emit("Notificacion-New", "Notificacion-New");
+    
     res.status(200).json({
       msg: 'Usuario actualizado exitosamente.',
     });
