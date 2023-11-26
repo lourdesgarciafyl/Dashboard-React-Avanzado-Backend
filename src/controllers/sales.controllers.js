@@ -1,6 +1,6 @@
-import Product from "../models/product";
-import Sale from "../models/sale";
-import User from "../models/user";
+import Product from '../models/product';
+import Sale from '../models/sale';
+import User from '../models/user';
 
 export const createSale = async (req, res) => {
   try {
@@ -10,7 +10,7 @@ export const createSale = async (req, res) => {
       return res.status(404).json({
         errores: [
           {
-            msg: "Usuario no encontrado.",
+            msg: 'Usuario no encontrado.',
           },
         ],
       });
@@ -20,7 +20,7 @@ export const createSale = async (req, res) => {
       return res.status(400).json({
         errores: [
           {
-            msg: "No hay productos en el carrito.",
+            msg: 'No hay productos en el carrito.',
           },
         ],
       });
@@ -48,7 +48,7 @@ export const createSale = async (req, res) => {
       userSearched.cart = [];
       await userSearched.save();
       res.status(201).json({
-        msg: "La venta fue creada correctamente.",
+        msg: 'La venta fue creada correctamente.',
       });
     }
   } catch (error) {
@@ -56,7 +56,7 @@ export const createSale = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: "Error. No se pudo realizar la venta.",
+          msg: 'Error. No se pudo realizar la venta.',
         },
       ],
     });
@@ -67,12 +67,12 @@ export const getListSales = async (req, res) => {
   try {
     const sales = await Sale.find()
       .populate({
-        path: "cartProducts._id",
-        select: "-__v",
+        path: 'cartProducts._id',
+        select: '-__v',
       })
       .populate({
-        path: "user",
-        select: "-_id -password -status -rol -__v",
+        path: 'user',
+        select: '-_id -password -status -rol -__v',
       });
     res.status(200).json(sales);
   } catch (error) {
@@ -80,7 +80,7 @@ export const getListSales = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: "Error al intentar listar las ventas.",
+          msg: 'Error al intentar listar las ventas.',
         },
       ],
     });
@@ -91,19 +91,19 @@ export const getSale = async (req, res) => {
   try {
     const sale = await Sale.findById(req.params.id)
       .populate({
-        path: "cartProducts.product",
-        select: "-_id -__v",
+        path: 'cartProducts.product',
+        select: '-_id -__v',
       })
       .populate({
-        path: "user",
-        select: "-_id -password -status -rol -__v",
+        path: 'user',
+        select: '-_id -password -status -rol -__v',
       });
     res.status(200).json(sale);
   } catch (error) {
     res.status(400).json({
       errores: [
         {
-          msg: "Error, no se pudo obtener el pedido.",
+          msg: 'Error, no se pudo obtener el pedido.',
         },
       ],
     });
@@ -115,10 +115,10 @@ export const cancelSale = async (req, res) => {
   try {
     const sale = await Sale.findById(idSale);
     if (!sale) {
-      return res.status(404).json({ error: "Venta no encontrada" });
+      return res.status(404).json({ error: 'Venta no encontrada' });
     }
-    if (sale.status === "Cancelada") {
-      return res.status(404).json({ error: "La venta ya se canceló." });
+    if (sale.status === 'Cancelada') {
+      return res.status(404).json({ error: 'La venta ya se canceló.' });
     }
 
     //Verificar el stock de cada producto y realizar la venta.
@@ -138,17 +138,17 @@ export const cancelSale = async (req, res) => {
     const productsAddStock = Promise.all(promisesStock);
     //Espera que todas las promesas se resuelvan y envía la respuesta
     if (productsAddStock) {
-      sale.status = "Cancelada";
+      sale.status = 'Cancelada';
       await sale.save();
       res.status(200).json({
-        msg: "La venta se canceló.",
+        msg: 'La venta se canceló.',
       });
     }
   } catch (error) {
     res.status(400).json({
       errores: [
         {
-          msg: "Error, no se pudo cancelar la venta.",
+          msg: 'Error, no se pudo cancelar la venta.',
         },
       ],
     });
@@ -162,20 +162,20 @@ export const deleteSale = async (req, res) => {
       return res.status(404).json({
         errores: [
           {
-            msg: "La venta no fue encontrada.",
+            msg: 'La venta no fue encontrada.',
           },
         ],
       });
     }
     await Sale.findByIdAndDelete(req.params.id);
     res.status(200).json({
-      msg: "Venta eliminada exitosamente.",
+      msg: 'Venta eliminada exitosamente.',
     });
   } catch (error) {
     return res.status(400).json({
       errores: [
         {
-          msg: "No se pudo eliminar la venta.",
+          msg: 'No se pudo eliminar la venta.',
         },
       ],
     });
@@ -185,7 +185,7 @@ export const deleteSale = async (req, res) => {
 export const getSalesByDate = async (req, res) => {
   try {
     const { date } = req.params;
-    const sales = await Sale.find({ saleDate: date }, "id saleDate totalPrice");
+    const sales = await Sale.find({ saleDate: date }, 'id saleDate totalPrice');
     const totalSales = {
       searchedDate: date,
       totalSalesQuantity: sales.length,
@@ -199,7 +199,7 @@ export const getSalesByDate = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: "Error al intentar listar las ventas por día.",
+          msg: 'Error al intentar listar las ventas por día.',
         },
       ],
     });
@@ -210,8 +210,8 @@ export const getSalesByDate = async (req, res) => {
 
 const date = new Date();
 const year = date.getFullYear();
-const month = String(date.getMonth() + 1).padStart(2, "0");
-const day = String(date.getDate()).padStart(2, "0");
+const month = String(date.getMonth() + 1).padStart(2, '0');
+const day = String(date.getDate()).padStart(2, '0');
 const currentDate = `${year}-${month}-${day}`;
 
 // Daily sales
@@ -220,7 +220,7 @@ export const getDailySales = async (req, res) => {
   try {
     const sales = await Sale.find(
       { saleDate: currentDate },
-      "id saleDate totalPrice"
+      'id saleDate totalPrice'
     );
     const totalSales = {
       currentDate,
@@ -236,7 +236,7 @@ export const getDailySales = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: "Error al intentar listar las ventas del día.",
+          msg: 'Error al intentar listar las ventas del día.',
         },
       ],
     });
@@ -255,12 +255,12 @@ export const getWeeklySales = async (req, res) => {
     weekEndDate.setDate(weekStartDate.getDate() + 6);
     weekEndDate.setHours(23, 59, 59, 999);
 
-    const weekStartDateString = weekStartDate.toISOString().split("T")[0];
-    const weekEndDateString = weekEndDate.toISOString().split("T")[0];
+    const weekStartDateString = weekStartDate.toISOString().split('T')[0];
+    const weekEndDateString = weekEndDate.toISOString().split('T')[0];
 
     const sales = await Sale.find(
       { saleDate: { $gte: weekStartDateString, $lte: weekEndDateString } },
-      "id saleDate totalPrice"
+      'id saleDate totalPrice'
     );
 
     const dailySales = await Sale.aggregate([
@@ -274,15 +274,15 @@ export const getWeeklySales = async (req, res) => {
       },
       {
         $group: {
-          _id: "$saleDate",
-          totalSalesPrice: { $sum: "$totalPrice" },
+          _id: '$saleDate',
+          totalSalesPrice: { $sum: '$totalPrice' },
           totalSalesQuantity: { $sum: 1 },
         },
       },
       {
         $project: {
           _id: 0,
-          saleDate: "$_id",
+          saleDate: '$_id',
           totalSalesPrice: 1,
           totalSalesQuantity: 1,
         },
@@ -310,7 +310,7 @@ export const getWeeklySales = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: "Error al intentar listar las ventas de la semana.",
+          msg: 'Error al intentar listar las ventas de la semana.',
         },
       ],
     });
@@ -325,12 +325,12 @@ export const getMonthlySales = async (req, res) => {
     const monthStartDate = new Date(date.getFullYear(), date.getMonth(), 1);
     const monthEndDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-    const monthStartDateString = monthStartDate.toISOString().split("T")[0];
-    const monthEndDateString = monthEndDate.toISOString().split("T")[0];
+    const monthStartDateString = monthStartDate.toISOString().split('T')[0];
+    const monthEndDateString = monthEndDate.toISOString().split('T')[0];
 
     const sales = await Sale.find(
       { saleDate: { $gte: monthStartDateString, $lte: monthEndDateString } },
-      "id saleDate totalPrice"
+      'id saleDate totalPrice'
     );
 
     const monthlySales = await Sale.aggregate([
@@ -344,15 +344,15 @@ export const getMonthlySales = async (req, res) => {
       },
       {
         $group: {
-          _id: "$saleDate",
-          totalSalesPrice: { $sum: "$totalPrice" },
+          _id: '$saleDate',
+          totalSalesPrice: { $sum: '$totalPrice' },
           totalSalesQuantity: { $sum: 1 },
         },
       },
       {
         $project: {
           _id: 0,
-          saleDate: "$_id",
+          saleDate: '$_id',
           totalSalesPrice: 1,
           totalSalesQuantity: 1,
         },
@@ -380,7 +380,7 @@ export const getMonthlySales = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: "Error al intentar listar las ventas del mes.",
+          msg: 'Error al intentar listar las ventas del mes.',
         },
       ],
     });
@@ -395,12 +395,12 @@ export const getYearlySales = async (req, res) => {
     const yearStartDate = new Date(date.getFullYear(), 0, 1);
     const yearEndDate = new Date(date.getFullYear(), 11, 31);
 
-    const yearStartDateString = yearStartDate.toISOString().split("T")[0];
-    const yearEndDateString = yearEndDate.toISOString().split("T")[0];
+    const yearStartDateString = yearStartDate.toISOString().split('T')[0];
+    const yearEndDateString = yearEndDate.toISOString().split('T')[0];
 
     const sales = await Sale.find(
       { saleDate: { $gte: yearStartDateString, $lte: yearEndDateString } },
-      "id saleDate totalPrice"
+      'id saleDate totalPrice'
     );
 
     const yearlySales = await Sale.aggregate([
@@ -415,18 +415,18 @@ export const getYearlySales = async (req, res) => {
       {
         $project: {
           saleMonth: {
-            $toInt: { $substr: ["$saleDate", 5, 2] }, // Obtén el mes de la cadena
+            $toInt: { $substr: ['$saleDate', 5, 2] }, // Obtén el mes de la cadena
           },
-          totalSalesPrice: "$totalPrice",
+          totalSalesPrice: '$totalPrice',
           totalSalesQuantity: 1,
         },
       },
       {
         $group: {
           _id: {
-            saleMonth: "$saleMonth",
+            saleMonth: '$saleMonth',
           },
-          totalSalesPrice: { $sum: "$totalSalesPrice" },
+          totalSalesPrice: { $sum: '$totalSalesPrice' },
           totalSalesQuantity: { $sum: 1 },
         },
       },
@@ -437,55 +437,55 @@ export const getYearlySales = async (req, res) => {
             $switch: {
               branches: [
                 {
-                  case: { $eq: ["$_id.saleMonth", 1] },
-                  then: { monthName: "Enero", monthNumber: 1 },
+                  case: { $eq: ['$_id.saleMonth', 1] },
+                  then: { monthName: 'Enero', monthNumber: 1 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 2] },
-                  then: { monthName: "Febrero", monthNumber: 2 },
+                  case: { $eq: ['$_id.saleMonth', 2] },
+                  then: { monthName: 'Febrero', monthNumber: 2 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 3] },
-                  then: { monthName: "Marzo", monthNumber: 3 },
+                  case: { $eq: ['$_id.saleMonth', 3] },
+                  then: { monthName: 'Marzo', monthNumber: 3 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 4] },
-                  then: { monthName: "Abril", monthNumber: 4 },
+                  case: { $eq: ['$_id.saleMonth', 4] },
+                  then: { monthName: 'Abril', monthNumber: 4 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 5] },
-                  then: { monthName: "Mayo", monthNumber: 5 },
+                  case: { $eq: ['$_id.saleMonth', 5] },
+                  then: { monthName: 'Mayo', monthNumber: 5 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 6] },
-                  then: { monthName: "Junio", monthNumber: 6 },
+                  case: { $eq: ['$_id.saleMonth', 6] },
+                  then: { monthName: 'Junio', monthNumber: 6 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 7] },
-                  then: { monthName: "Julio", monthNumber: 7 },
+                  case: { $eq: ['$_id.saleMonth', 7] },
+                  then: { monthName: 'Julio', monthNumber: 7 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 8] },
-                  then: { monthName: "Agosto", monthNumber: 8 },
+                  case: { $eq: ['$_id.saleMonth', 8] },
+                  then: { monthName: 'Agosto', monthNumber: 8 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 9] },
-                  then: { monthName: "Septiembre", monthNumber: 9 },
+                  case: { $eq: ['$_id.saleMonth', 9] },
+                  then: { monthName: 'Septiembre', monthNumber: 9 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 10] },
-                  then: { monthName: "Octubre", monthNumber: 10 },
+                  case: { $eq: ['$_id.saleMonth', 10] },
+                  then: { monthName: 'Octubre', monthNumber: 10 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 11] },
-                  then: { monthName: "Noviembre", monthNumber: 11 },
+                  case: { $eq: ['$_id.saleMonth', 11] },
+                  then: { monthName: 'Noviembre', monthNumber: 11 },
                 },
                 {
-                  case: { $eq: ["$_id.saleMonth", 12] },
-                  then: { monthName: "Diciembre", monthNumber: 12 },
+                  case: { $eq: ['$_id.saleMonth', 12] },
+                  then: { monthName: 'Diciembre', monthNumber: 12 },
                 },
               ],
-              default: "Desconocido",
+              default: 'Desconocido',
             },
           },
           totalSalesPrice: 1,
@@ -493,7 +493,7 @@ export const getYearlySales = async (req, res) => {
         },
       },
       {
-        $sort: { "saleMonth.monthNumber": 1 },
+        $sort: { 'saleMonth.monthNumber': 1 },
       },
     ]);
 
@@ -513,7 +513,7 @@ export const getYearlySales = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: "Error al intentar listar las ventas del año.",
+          msg: 'Error al intentar listar las ventas del año.',
         },
       ],
     });
@@ -524,16 +524,17 @@ export const getSalesByProduct = async (req, res) => {
   try {
     const mostSoldProducts = await Sale.aggregate([
       {
-        $unwind: "$cartProducts",
+        $unwind: '$cartProducts',
       },
       {
         $group: {
-          _id: "$cartProducts.productName",
+          _id: '$cartProducts._id',
+          productName: { $first: '$cartProducts.productName' },
           totalQuantity: {
-            $sum: "$cartProducts.quantity",
+            $sum: '$cartProducts.quantity',
           },
           totalPrice: {
-            $sum: "$cartProducts.price",
+            $sum: '$cartProducts.price',
           },
         },
       },
@@ -542,10 +543,11 @@ export const getSalesByProduct = async (req, res) => {
           totalQuantity: -1,
         },
       },
+
       {
         $project: {
-          _id: 0,
-          productName: "$_id",
+          _id: 1,
+          productName: 1,
           totalQuantity: 1,
           totalPrice: 1,
         },
@@ -558,7 +560,7 @@ export const getSalesByProduct = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: "Error al intentar listar los productos más vendidos.",
+          msg: 'Error al intentar listar los productos más vendidos.',
         },
       ],
     });
@@ -569,24 +571,24 @@ export const getSalesByCategory = async (req, res) => {
   try {
     const mostSoldProductsByCategory = await Sale.aggregate([
       {
-        $unwind: "$cartProducts",
+        $unwind: '$cartProducts',
       },
       {
         $lookup: {
-          from: "products",
-          localField: "cartProducts._id",
-          foreignField: "_id",
-          as: "cartProducts.productInfo",
+          from: 'products',
+          localField: 'cartProducts._id',
+          foreignField: '_id',
+          as: 'cartProducts.productInfo',
         },
       },
       {
-        $unwind: "$cartProducts.productInfo",
+        $unwind: '$cartProducts.productInfo',
       },
       {
         $group: {
-          _id: "$cartProducts.productInfo.category",
-          totalQuantity: { $sum: "$cartProducts.quantity" },
-          totalPrice: { $sum: "$cartProducts.price" },
+          _id: '$cartProducts.productInfo.category',
+          totalQuantity: { $sum: '$cartProducts.quantity' },
+          totalPrice: { $sum: '$cartProducts.price' },
         },
       },
       {
@@ -595,7 +597,7 @@ export const getSalesByCategory = async (req, res) => {
       {
         $project: {
           _id: 0,
-          category: "$_id",
+          category: '$_id',
           totalQuantity: 1,
           totalPrice: 1,
         },
@@ -607,7 +609,7 @@ export const getSalesByCategory = async (req, res) => {
     res.status(400).json({
       errores: [
         {
-          msg: "Error al intentar listar los productos más vendidos según categoría.",
+          msg: 'Error al intentar listar los productos más vendidos según categoría.',
         },
       ],
     });
